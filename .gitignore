@@ -1,0 +1,11 @@
+# Waveform files 
+*.ghw 
+*.vcd 
+*.o 
+*.cf 
+*.exe 
+e~* 
+*.bak 
+Thumbs.db 
+desktop.ini 
+.vscode/ 
