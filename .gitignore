@@ -16,3 +16,7 @@ desktop.ini
 # Editors
 .vscode/
 .idea/
+
+# LibreOffice/Office lock files
+.~lock.*#
+~$*
