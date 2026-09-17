@@ -1,0 +1,53 @@
+name: VHDL CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PartB_VHDL_32bit/**'
+      - '.github/workflows/vhdl-ci.yml'
+  pull_request:
+    paths:
+      - 'PartB_VHDL_32bit/**'
+      - '.github/workflows/vhdl-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  ghdl:
+    name: GHDL — compile & run testbenches
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: PartB_VHDL_32bit
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: mcode
+
+      - name: Analyze sources
+        run: ghdl -a src/*.vhd
+
+      - name: Run testbenches
+        run: |
+          set -e
+          mkdir -p waveforms
+          for tb in ALU_32bit_tb Control_Unit_tb Data_Memory_tb Instruction_Memory_tb Register_File_tb; do
+            echo "::group::Elaborate & run ${tb}"
+            ghdl -e "${tb}"
+            ghdl -r "${tb}" --stop-time=1us --wave=waveforms/"${tb}".ghw
+            echo "::endgroup::"
+          done
+
+      - name: Upload waveforms
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ghdl-waveforms
+          path: PartB_VHDL_32bit/waveforms/*.ghw
+          retention-days: 7

@@ -40,7 +40,7 @@ Modules in `PartB_VHDL_32bit/src/`:
 | `ALU_32bit.vhd` | 32-bit ALU (add, sub, and, or, slt) with zero flag |
 | `ALU_Control.vhd` | ALU operation decoder |
 | `Control_Unit.vhd` | Main control unit |
-| `Register_File_32bit.vhd` | 32 × 32-bit register file |
+| `Register_File_32bit.vhd` | 8 × 32-bit register file (3-bit addresses) |
 | `Data_Memory.vhd` | Data memory |
 | `Instruction_Memory.vhd` | Instruction memory |
 
