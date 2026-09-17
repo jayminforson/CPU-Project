@@ -1,5 +1,5 @@
 -- Data_Memory_tb.vhd
--- Testbench for Data Memory with full signal visibility
+-- Self-checking testbench for Data Memory (asserts expected results)
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -44,36 +44,55 @@ begin
     
     process
     begin
-        -- Test 1: Write 1024 to Address 2
+        -- Test 1: Write 1024 (0x00000400) to Address 2
         mem_write_en <= '1';
         mem_access_addr <= x"00000002";
         mem_write_data <= x"00000400";  -- 1024 in hex
         wait for 10 ns;
         mem_write_en <= '0';
         
-        -- Read from Address 2
+        -- Read back from Address 2 and check
         mem_read <= '1';
         mem_access_addr <= x"00000002";
         wait for 10 ns;
+        assert mem_read_data = x"00000400"
+            report "Data Memory failed: Address 2 should read 0x00000400, got 0x" &
+                   integer'image(to_integer(unsigned(mem_read_data)))
+            severity failure;
         mem_read <= '0';
         wait for 10 ns;
         
-        -- Test 2: Write 429496 to Address 4
+        -- Unwritten address must read as zero
+        mem_read <= '1';
+        mem_access_addr <= x"00000063";
+        wait for 10 ns;
+        assert mem_read_data = x"00000000"
+            report "Data Memory failed: unwritten Address 99 should read 0x00000000, got 0x" &
+                   integer'image(to_integer(unsigned(mem_read_data)))
+            severity failure;
+        mem_read <= '0';
+        wait for 10 ns;
+        
+        -- Test 2: Write 429496 (0x00068E78) to Address 4
         mem_write_en <= '1';
         mem_access_addr <= x"00000004";
         mem_write_data <= x"00068E78";  -- 429496 in hex
         wait for 10 ns;
         mem_write_en <= '0';
         
-        -- Read from Address 4
+        -- Read back from Address 4 and check
         mem_read <= '1';
         mem_access_addr <= x"00000004";
         wait for 10 ns;
+        assert mem_read_data = x"00068E78"
+            report "Data Memory failed: Address 4 should read 0x00068E78, got 0x" &
+                   integer'image(to_integer(unsigned(mem_read_data)))
+            severity failure;
         mem_read <= '0';
         
         -- Stop simulation
         wait for 20 ns;
-        report "Data Memory Testbench completed!" severity note;
+        report "Data Memory Testbench completed successfully - all assertions passed!" severity note;
         wait;
     end process;
     

@@ -1,5 +1,5 @@
 -- Instruction_Memory_tb.vhd
--- Testbench for Instruction Memory with full signal visibility
+-- Self-checking testbench for Instruction Memory (asserts expected results)
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -27,29 +27,50 @@ begin
     
     process
     begin
-        -- Read instruction at Address 0
+        -- Read instruction at Address 0 (byte address 0x00): add $t0, $t1, $t2
         pc <= x"00000000";
         wait for 10 ns;
+        assert instruction = x"012A4020"
+            report "Instruction Memory failed: PC=0x00 expected 0x012A4020, got 0x" &
+                   integer'image(to_integer(unsigned(instruction)))
+            severity failure;
         
-        -- Read instruction at Address 2 (pc = 8)
+        -- Read instruction at Address 2 (byte address 0x08): sub $t2, $t2, $t3
         pc <= x"00000008";
         wait for 10 ns;
+        assert instruction = x"014B5022"
+            report "Instruction Memory failed: PC=0x08 expected 0x014B5022, got 0x" &
+                   integer'image(to_integer(unsigned(instruction)))
+            severity failure;
         
-        -- Read instruction at Address 4 (pc = 16)
+        -- Read instruction at Address 4 (byte address 0x10): and $t1, $t2, $t0
         pc <= x"00000010";
         wait for 10 ns;
+        assert instruction = x"01484824"
+            report "Instruction Memory failed: PC=0x10 expected 0x01484824, got 0x" &
+                   integer'image(to_integer(unsigned(instruction)))
+            severity failure;
         
-        -- Read instruction at Address 6 (pc = 24)
+        -- Read instruction at Address 6 (byte address 0x18): or $t2, $t3, $t1
         pc <= x"00000018";
         wait for 10 ns;
+        assert instruction = x"01695025"
+            report "Instruction Memory failed: PC=0x18 expected 0x01695025, got 0x" &
+                   integer'image(to_integer(unsigned(instruction)))
+            severity failure;
         
-        -- Read invalid address
+        -- Out-of-range PC: memory is indexed by pc(5 downto 2) only, so the
+        -- address wraps around and PC=0x100 aliases to index 0 (mem(0))
         pc <= x"00000100";
         wait for 10 ns;
+        assert instruction = x"012A4020"
+            report "Instruction Memory failed: PC=0x100 wraps to index 0, expected 0x012A4020, got 0x" &
+                   integer'image(to_integer(unsigned(instruction)))
+            severity failure;
         
         -- Stop simulation
         wait for 10 ns;
-        report "Instruction Memory Testbench completed!" severity note;
+        report "Instruction Memory Testbench completed successfully - all assertions passed!" severity note;
         wait;
     end process;
     
