@@ -8,7 +8,6 @@ A two-part computer architecture project for **Computer Organization & Architect
 ## Repository Layout
 
 ```
-CPU/
 ├── PartA_Logisim_16bit/     # 16-bit CPU in Logisim
 │   ├── ALU_/                # 16-bit ALU circuit
 │   ├── Registers_/          # Register file circuit
@@ -17,15 +16,16 @@ CPU/
 │   └── truthtable.txt       # Control truth table
 ├── PartB_VHDL_32bit/
 │   ├── src/                 # VHDL source (ALU, registers, memories, control)
-│   ├── testbench/           # Testbenches for every module
-│   └── waveforms/           # GHDL/GTKWave waveform dumps (generated)
+│   └── testbench/           # Testbenches for every module
 ├── Screenshots/             # Simulation result screenshots
 └── Report.docx              # Final project report
 ```
 
+> `PartB_VHDL_32bit/waveforms/` is generated during simulation and git-ignored.
+
 ## Part A — Logisim 16-bit CPU
 
-1. Open `PartA_Logisim_16bit/CPU_/cpu.circ` in [Logisim](http://www.cburch.com/logisim/).
+1. Open `PartA_Logisim_16bit/CPU_/cpu.circ` in [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) (saved with v4.1.0).
 2. Load the RAM contents from `PartA_Logisim_16bit/CPU_/RAM content` (right-click RAM → Load Image).
 3. Run the simulation (Simulate → Enabled, then tick the clock).
 
@@ -48,6 +48,7 @@ Modules in `PartB_VHDL_32bit/src/`:
 
 ```bash
 cd PartB_VHDL_32bit
+mkdir -p waveforms
 
 # Analyze sources
 ghdl -a src/*.vhd
