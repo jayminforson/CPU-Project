@@ -59,12 +59,20 @@ begin
                    integer'image(to_integer(unsigned(instruction)))
             severity failure;
         
-        -- Out-of-range PC: memory is indexed by pc(5 downto 2) only, so the
-        -- address wraps around and PC=0x100 aliases to index 0 (mem(0))
+        -- Out-of-range PCs must return zero, not wrap around
+        -- PC=0x40 -> word index 16 (first location beyond the 16-word memory)
+        pc <= x"00000040";
+        wait for 10 ns;
+        assert instruction = x"00000000"
+            report "Instruction Memory failed: PC=0x40 is out of range, expected 0x00000000, got 0x" &
+                   integer'image(to_integer(unsigned(instruction)))
+            severity failure;
+        
+        -- PC=0x100 -> word index 64 (well beyond memory)
         pc <= x"00000100";
         wait for 10 ns;
-        assert instruction = x"012A4020"
-            report "Instruction Memory failed: PC=0x100 wraps to index 0, expected 0x012A4020, got 0x" &
+        assert instruction = x"00000000"
+            report "Instruction Memory failed: PC=0x100 is out of range, expected 0x00000000, got 0x" &
                    integer'image(to_integer(unsigned(instruction)))
             severity failure;
         

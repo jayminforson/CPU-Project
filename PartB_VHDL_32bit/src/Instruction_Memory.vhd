@@ -41,14 +41,14 @@ architecture Behavioral of Instruction_Memory is
     
 begin
     -- Instruction fetch based on PC
-    -- Using PC(3 downto 1) to index into memory (since addresses are word-aligned)
+    -- Word index = PC / 4 = pc(31 downto 2), since instructions are 4 bytes each
     process(pc)
         variable addr_index : integer;
     begin
-        -- Convert PC to index (divide by 4 since instructions are 4 bytes each)
-        addr_index := to_integer(unsigned(pc(5 downto 2)));
+        -- Convert the full word-aligned PC to an index
+        addr_index := to_integer(unsigned(pc(31 downto 2)));
         
-        -- Check if address is within bounds
+        -- Check if address is within bounds (16 words)
         if addr_index < 16 then
             instruction <= mem(addr_index);
         else
