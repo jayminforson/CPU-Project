@@ -1,11 +1,18 @@
-# Waveform files 
-*.ghw 
-*.vcd 
-*.o 
-*.cf 
-*.exe 
-e~* 
-*.bak 
-Thumbs.db 
-desktop.ini 
-.vscode/ 
+# GHDL / simulator build artifacts
+*.ghw
+*.vcd
+*.o
+*.cf
+*.exe
+e~*
+work-obj93.cf
+
+# Logs & temp files
+*.bak
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
