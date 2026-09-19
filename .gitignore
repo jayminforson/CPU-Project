@@ -20,3 +20,6 @@ desktop.ini
 # LibreOffice/Office lock files
 .~lock.*#
 ~$*
+AGENTS.md
+CLAUDE.md
+COPILOT.md
